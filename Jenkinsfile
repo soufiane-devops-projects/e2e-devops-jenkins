@@ -12,12 +12,10 @@ pipeline{
                 cleanWs()
             }
         }
-    }   
-    stages{
         stage("Checkout from SCM"){
             steps{
                 git branch: 'main', credentialsId: 'github', url: 'https://github.com/soufiane-devops-projects/e2e-devops-jenkins'
             }
         }
-    }
+    }   
 }
