@@ -15,5 +15,15 @@ pipeline{
                 git branch: 'main', credentialsId: 'github', url: 'https://github.com/soufiane-devops-projects/e2e-devops-jenkins'
             }
         }
+          stage("Build application"){
+            steps{
+                sh 'mvn clean package'
+            }
+        }
+          stage("Test application"){
+            steps{
+                sh 'mvn test'
+            }
+        }
     }   
 }
