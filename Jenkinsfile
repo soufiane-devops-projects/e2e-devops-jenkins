@@ -1,6 +1,6 @@
 pipeline{
     agent {
-        label 'master'
+        label 'controller'
     }
     tools{
         jdk 'Java17'
