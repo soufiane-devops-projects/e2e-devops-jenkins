@@ -15,14 +15,22 @@ pipeline{
                 git branch: 'main', credentialsId: 'github', url: 'https://github.com/soufiane-devops-projects/e2e-devops-jenkins'
             }
         }
-          stage("Build application"){
+        stage("Build application"){
             steps{
                 sh 'mvn clean package'
             }
         }
-          stage("Test application"){
+        stage("Test application"){
             steps{
                 sh 'mvn test'
+            }
+        }
+
+        stage("Sonarqube Analysis"){
+            steps{
+                withSonarQubeEnv(credentialsId: 'jenkins-sonarqube-token') {
+                    sh 'mvn sonar:sonar'    
+                }
             }
         }
     }   
