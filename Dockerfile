@@ -6,7 +6,7 @@ COPY . .
 
 RUN mvn clean install
 
-FROM eclipse-temurin
+FROM eclipse-temurin:23-jre-ubi9-minimal
 
 WORKDIR /app
 
