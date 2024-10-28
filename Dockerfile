@@ -10,7 +10,7 @@ FROM eclipse-temurin:23-jre-ubi9-minimal
 
 WORKDIR /app
 
-COPY --from=build /app/target/demoapp.jar /apps
+COPY --from=build /app/target/demoapp.jar /app
 
 EXPOSE 8080
 
