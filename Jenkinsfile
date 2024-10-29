@@ -63,6 +63,24 @@ pipeline{
             }
         }
 
+          stage("Trivy Scan") {
+            steps {
+                script {
+		   sh ("docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ${IMAGE_NAME}:${IMAGE_TAG} --no-progress --scanners vuln  --exit-code 0 --severity HIGH,CRITICAL --format table")
+                }
+            }
+
+        }
+
+        stage ('Cleanup Artifacts') {
+            steps {
+                script {
+                    sh "docker rmi ${IMAGE_NAME}:${IMAGE_TAG}"
+                    sh "docker rmi ${IMAGE_NAME}:latest"
+                }
+            }
+        }
+
         stage("Trigger CD"){
             steps{
                 script {
@@ -70,5 +88,18 @@ pipeline{
                 }
             }
         }
+
+        post {
+            failure {
+                emailext body: '''${SCRIPT, template="groovy-html.template"}''', 
+                        subject: "${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - Failed", 
+                        mimeType: 'text/html',to: "developpeur.web90@gmail.com"
+                }
+            success {
+                emailext body: '''${SCRIPT, template="groovy-html.template"}''', 
+                        subject: "${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - Successful", 
+                        mimeType: 'text/html',to: "developpeur.web90@gmail.com"
+            }      
+    
     }   
 }
