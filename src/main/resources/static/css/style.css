@@ -24,36 +24,7 @@ body {
     background-color: lightgrey;
     padding: 10px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-}
-
-.footer-left {
-    flex: 1;
-}
-
-.footer-right {
-    display: flex;
-    gap: 10px;
-}
-
-/* Update the YouTube icon color to red */
-.youtube {
-    color: red;
-}
-
-/* Update the GitHub icon color to black */
-.github {
-    color: black;
-}
-
-.center {
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
 }
 
