@@ -49,7 +49,7 @@ pipeline{
             }
         }
 
-        stage("Build & Push Docker Image"){
+        stage("Build Docker Image"){
             steps{
                 script {
                     docker.withRegistry('', DOCKER_PASS){
@@ -63,15 +63,30 @@ pipeline{
             }
         }
 
-          stage("Trivy Scan") {
+        stage('Trivy Security Scan') {
             steps {
                 script {
-                    sh ("docker run -v /srv/db:/root/.cache/ bitnami/trivy image --download-db-only")
-		            sh ("docker run -v /var/run/docker.sock:/var/run/docker.sock bitnami/trivy image ${IMAGE_NAME}:${IMAGE_TAG} --no-progress --scanners vuln  --exit-code 0 --severity HIGH,CRITICAL --format table")
-
+                    // Exécuter le scan Trivy
+                    sh """
+                        docker run --rm \
+                        -v /var/run/docker.sock:/var/run/docker.sock \
+                        -v \$HOME/.cache/trivy:/root/.cache/ \
+                        aquasec/trivy:latest image ${IMAGE_NAME}:${IMAGE_TAG} \
+                        --scanners vuln --exit-code 1 --severity HIGH,CRITICAL --format table
+                    """
                 }
             }
+        }
 
+        stage("Push Docker Image"){
+            steps{
+                script {
+                    docker.withRegistry('', DOCKER_PASS){
+                        docker_image.push("${IMAGE_TAG}")
+                        docker_image.push("latest")
+                    }
+                }
+            }
         }
 
         stage ('Cleanup Artifacts') {
