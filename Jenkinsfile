@@ -66,7 +66,9 @@ pipeline{
           stage("Trivy Scan") {
             steps {
                 script {
-		   sh ("docker run -v /var/run/docker.sock:/var/run/docker.sock bitnami/trivy image ${IMAGE_NAME}:${IMAGE_TAG} --no-progress --scanners vuln  --exit-code 0 --severity HIGH,CRITICAL --format table")
+                    sh ("docker run -v /srv/db:/root/.cache/ bitnami/trivy image --download-db-only")
+		            sh ("docker run -v /var/run/docker.sock:/var/run/docker.sock bitnami/trivy image ${IMAGE_NAME}:${IMAGE_TAG} --no-progress --scanners vuln  --exit-code 0 --severity HIGH,CRITICAL --format table")
+
                 }
             }
 
