@@ -88,8 +88,9 @@ pipeline{
                 }
             }
         }
+    }
 
-        post {
+    post {
             failure {
                 emailext body: '''${SCRIPT, template="groovy-html.template"}''', 
                         subject: "${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - Failed", 
@@ -101,5 +102,6 @@ pipeline{
                         mimeType: 'text/html',to: "developpeur.web90@gmail.com"
             }      
     
-    }   
+        }
+
 }
