@@ -63,32 +63,6 @@ pipeline{
             }
         }
 
-        stage('Trivy Security Scan') {
-            steps {
-                script {
-                    // Exécuter le scan Trivy
-                    sh """
-                        docker run --rm \
-                        -v /var/run/docker.sock:/var/run/docker.sock \
-                        -v \$HOME/.cache/trivy:/root/.cache/ \
-                        aquasec/trivy:latest image ${IMAGE_NAME}:${IMAGE_TAG} \
-                        --scanners vuln --exit-code 1 --severity HIGH,CRITICAL --format table
-                    """
-                }
-            }
-        }
-
-        stage("Push Docker Image"){
-            steps{
-                script {
-                    docker.withRegistry('', DOCKER_PASS){
-                        docker_image.push("${IMAGE_TAG}")
-                        docker_image.push("latest")
-                    }
-                }
-            }
-        }
-
         stage ('Cleanup Artifacts') {
             steps {
                 script {
@@ -106,19 +80,5 @@ pipeline{
             }
         }
     }
-
-    post {
-            failure {
-                emailext body: '''${SCRIPT, template="groovy-html.template"}''', 
-                        subject: "${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - Failed", 
-                        mimeType: 'text/html',to: "developpeur.web90@gmail.com"
-                }
-            success {
-                emailext body: '''${SCRIPT, template="groovy-html.template"}''', 
-                        subject: "${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - Successful", 
-                        mimeType: 'text/html',to: "developpeur.web90@gmail.com"
-            }      
-    
-        }
 
 }
